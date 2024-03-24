@@ -106,8 +106,24 @@ public_users.get('/title/:title',function (req, res) {
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const isbn= req.params.isbn;
+    let myPromise = new Promise((resolve,reject) => {
+        setTimeout(() => {
+            let reviews= null;
+            if (isbn in books) {
+                reviews= JSON.stringify(books[isbn]['reviews'], null, 4);
+            }
+            resolve(reviews)
+        },6000)})
+        
+    myPromise.then((reviews) => {
+        if (reviews){
+            res.status(200).send(reviews);
+        }
+        else {
+            res.status(400).json({message: `Failed to obtain reviews because there is no book with ISBN ${isbn} in the database.`});
+        }  
+    })
 });
 
 module.exports.general = public_users;
